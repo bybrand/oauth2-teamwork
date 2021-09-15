@@ -19,9 +19,6 @@
         "authorization",
         "authentication"
     ],
-    "require": {
-        "league/oauth2-client": "^2.6"
-    },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "mockery/mockery": "^1.3"
@@ -35,5 +32,8 @@
         "psr-4": {
             "Bybrand\\OAuth2\\Client\\Test\\": "tests/src/"
         }
+    },
+    "require": {
+        "league/oauth2-client": "^2.6"
     }
 }

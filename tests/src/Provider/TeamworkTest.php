@@ -3,8 +3,10 @@
 namespace Bybrand\OAuth2\Client\Test\Provider;
 
 use PHPUnit\Framework\TestCase;
-use Bybrand\OAuth2\Client\Provider\Teamwork;
 use Mockery as m;
+
+use Bybrand\OAuth2\Client\Provider\Teamwork;
+use Bybrand\OAuth2\Client\OptionProvider\JsonAuthOptionProvider;
 
 /**
  * @group Teamwork
@@ -20,6 +22,8 @@ class TeamworkTest extends TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri'  => 'none',
         ]);
+
+        $this->provider->setOptionProvider(new JsonAuthOptionProvider);
     }
 
     public function tearDown(): void
@@ -103,8 +107,9 @@ class TeamworkTest extends TestCase
 
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider
-            ->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $token = $this->provider->getAccessToken('client_credentials', [
+            'code' => 'mock_authorization_code'
+        ]);
 
         $this->assertEquals('mock_access_token', $token->getToken());
         $this->assertNull($token->getExpires());
