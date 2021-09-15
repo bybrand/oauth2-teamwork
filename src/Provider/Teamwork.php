@@ -61,6 +61,14 @@ class Teamwork extends AbstractProvider
         }
     }
 
+    /**
+     * Generates a resource owner object from a successful resource owner
+     * details request.
+     *
+     * @param  array $response
+     * @param  AccessToken $token
+     * @return ResourceOwnerInterface
+     */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
         return;

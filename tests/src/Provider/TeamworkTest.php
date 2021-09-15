@@ -78,24 +78,7 @@ class TeamworkTest extends TestCase
      */
     public function testGetAccessToken()
     {
-        $json = [
-            'access_token' => 'mock_access_token',
-            'status'=> 'ok',
-            'installation' => [
-                'id' => 1,
-                'name' => 'Teamwork Developer',
-                'region' => 'US',
-                'apiEndPoint' => 'http://mock.teamwork.com/',
-                'url' => 'http://mock.teamwork.com/',
-                'chatEnabled' => false,
-                'company' => [
-                    'id'   => 1,
-                    'name' => 'Teamwork',
-                    'logo' => 'URL'
-                ],
-                'logo' => ''
-            ]
-        ];
+        $json = $this->jsonReturn();
 
         $mockResponse = m::mock('Psr\Http\Message\ResponseInterface');
         $mockResponse->shouldReceive('getBody')->andReturn(json_encode($json));
@@ -114,5 +97,56 @@ class TeamworkTest extends TestCase
         $this->assertEquals('mock_access_token', $token->getToken());
         $this->assertNull($token->getExpires());
         $this->assertNull($token->getRefreshToken());
+    }
+
+    /**
+     * @group Teamwork.installation
+     */
+    public function testInstallation()
+    {
+        $json = $this->jsonReturn();
+
+        $mockResponse = m::mock('Psr\Http\Message\ResponseInterface');
+        $mockResponse->shouldReceive('getBody')->andReturn(json_encode($json));
+        $mockResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
+        $mockResponse->shouldReceive('getStatusCode')->andReturn(200);
+
+        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($mockResponse);
+
+        $this->provider->setHttpClient($client);
+        $token = $this->provider->getAccessToken('client_credentials', [
+            'code' => 'mock_authorization_code'
+        ]);
+
+        $installation = $token->getValues()['installation'];
+
+        $this->assertEquals('1', $installation['id']);
+        $this->assertEquals('Teamwork Developer', $installation['name']);
+        $this->assertEquals('http://mock.teamwork.com/', $installation['apiEndPoint']);
+        $this->assertEquals('US', $installation['region']);
+    }
+
+    private function jsonReturn(): array
+    {
+        return [
+            'access_token' => 'mock_access_token',
+            'status'=> 'ok',
+            'installation' => [
+                'id' => 1,
+                'name' => 'Teamwork Developer',
+                'region' => 'US',
+                'apiEndPoint' => 'http://mock.teamwork.com/',
+                'url' => 'http://mock.teamwork.com/',
+                'chatEnabled' => false,
+                'company' => [
+                    'id'   => 1,
+                    'name' => 'Teamwork',
+                    'logo' => 'URL'
+                ],
+                'projectsEnabled' => true
+            ],
+            'user' => []
+        ];
     }
 }

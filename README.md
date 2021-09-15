@@ -14,7 +14,7 @@ This is a instruction base to get the token, and in then, to save in your databa
 
 ```
 use Bybrand\OAuth2\Client\Provider\Teamwork as ProviderTeamwork;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Bybrand\OAuth2\Client\OptionProvider\JsonAuthOptionProvider;
 
 $params = $_GET;
 
@@ -23,6 +23,9 @@ $provider = new ProviderTeamwork([
     'clientSecret' => 'secret-key',
     'redirectUri'  => 'your-url-redirect'
 ]);
+
+// Need to Json authentication and not the default x-www-form-urlencoded
+$provider->setOptionProvider(new JsonAuthOptionProvider)
 
 if (!isset($params['code']) or empty($params['code'])) {
     // If we don't have an authorization code then get one
@@ -45,14 +48,15 @@ if (!isset($params['code']) or empty($params['code'])) {
         $token = $provider->getAccessToken('authorization_code', [
             'code' => $params['code']
         ]);
-    } catch (IdentityProviderException $e) {
-        // Error, HTTP code status.
     } catch (\Exception $e) {
         // Error, make redirect or message.
     }
 
     // Use this to interact with an API on the users behalf
     echo $token->getToken();
+    
+    // Basic information about the installation.
+    $installation = $token->getValues()['installation'];
 }
 ```
 Please, for more information see the PHP League's general usage examples.
