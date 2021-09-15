@@ -1,0 +1,68 @@
+<?php
+
+namespace Bybrand\OAuth2\Client\Provider;
+
+use Psr\Http\Message\ResponseInterface;
+
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessToken;
+
+class Teamwork extends AbstractProvider
+{
+    /**
+     * Get authorization url to begin OAuth flow
+     *
+     * @return string
+     */
+    public function getBaseAuthorizationUrl()
+    {
+        return 'https://www.teamwork.com/launchpad/login';
+    }
+
+    /**
+     * Get access token url to retrieve token
+     *
+     * @param array $params
+     *
+     * @return string
+     */
+    public function getBaseAccessTokenUrl(array $params)
+    {
+        return 'https://www.teamwork.com/launchpad/v1/token.json';
+    }
+
+    public function getResourceOwnerDetailsUrl(AccessToken $token)
+    {
+        return;
+    }
+
+    protected function getDefaultScopes()
+    {
+        return [];
+    }
+
+    /**
+     * Check a provider response for errors.
+     *
+     * @throws IdentityProviderException
+     * @param  ResponseInterface $response
+     * @param  string $data Parsed response data
+     * @return void
+     */
+    protected function checkResponse(ResponseInterface $response, $data)
+    {
+        if ($response->getStatusCode() >= 400) {
+            throw new IdentityProviderException(
+                $response->getReasonPhrase(),
+                $response->getStatusCode(),
+                $response
+            );
+        }
+    }
+
+    protected function createResourceOwner(array $response, AccessToken $token)
+    {
+        return;
+    }
+}

@@ -20,7 +20,7 @@
         "authentication"
     ],
     "require": {
-        "league/oauth2-client": "^2.0"
+        "league/oauth2-client": "^2.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
