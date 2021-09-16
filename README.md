@@ -45,7 +45,7 @@ if (!isset($params['code']) or empty($params['code'])) {
 } else {
     try {
         // Try to get an access token (using the authorization code grant)
-        $token = $provider->getAccessToken('authorization_code', [
+        $token = $provider->getAccessToken('client_credentials', [
             'code' => $params['code']
         ]);
     } catch (\Exception $e) {
@@ -54,7 +54,7 @@ if (!isset($params['code']) or empty($params['code'])) {
 
     // Use this to interact with an API on the users behalf
     echo $token->getToken();
-    
+
     // Basic information about the installation.
     $installation = $token->getValues()['installation'];
 }
